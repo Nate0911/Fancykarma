@@ -2,27 +2,35 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Reddit Redirect</title>
+  <title>Redirecting...</title>
 </head>
 <body>
-  <h2>🔄 Processing login...</h2>
-  <div id="output"></div>
+  <h2>🔄 Processing Reddit Login...</h2>
+  <pre id="output">Fetching karma...</pre>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-    const state = urlParams.get("state");
-    const error = urlParams.get("error");
-
+    const code = new URLSearchParams(window.location.search).get("code");
     const output = document.getElementById("output");
 
-    if (error) {
-      output.innerHTML = `❌ Error: ${error}`;
-    } else if (code) {
-      output.innerHTML = `✅ Authorization Code: <code>${code}</code><br><br>
-        (Now send this code to your Cloudflare Worker to get the access token.)`;
+    if (!code) {
+      output.innerText = "❌ No code received. Login failed.";
     } else {
-      output.innerHTML = `⚠️ No code received.`;
+      fetch("https://fancy-morning-0446.ayoub-boutarfa77.workers.dev/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          output.innerText = `❌ Error: ${data.error}`;
+        } else {
+          output.innerText = `🎉 Welcome, u/${data.username}\n\n🔺 Link Karma: ${data.linkKarma}\n💬 Comment Karma: ${data.commentKarma}`;
+        }
+      })
+      .catch(err => {
+        output.innerText = "❌ Something went wrong: " + err.message;
+      });
     }
   </script>
 </body>
