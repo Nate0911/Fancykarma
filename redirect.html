@@ -2,88 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Verification Result</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <title>Reddit Login Result</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-      font-family: 'Poppins', sans-serif;
       background-color: #fafafa;
+      font-family: 'Poppins', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
+      margin: 0;
     }
-
-    .container {
+    .card {
       background: white;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
       text-align: center;
-      max-width: 400px;
+      max-width: 450px;
       width: 90%;
     }
-
-    .logo {
-      width: 60px;
-      margin-bottom: 1rem;
+    .card h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
     }
-
-    .result {
-      font-size: 1rem;
-      color: #444;
-      margin-top: 1.5rem;
+    .success {
+      color: green;
+      font-weight: 600;
     }
-
-    .error { color: #d33; font-weight: 600; }
-    .success { color: #2a9d8f; font-weight: 600; }
+    .error {
+      color: red;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img class="logo" src="https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png" alt="Reddit Logo">
-    <div id="result" class="result">Please wait...</div>
+  <div class="card">
+    <h2>🔄 Processing Reddit Login...</h2>
+    <div id="result">Checking credentials...</div>
   </div>
 
   <script>
-    async function handleOAuthRedirect() {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
+    async function fetchToken(code) {
+      const response = await fetch('https://fancykarma-backend.onrender.com/auth', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ code })
+      });
+      return await response.json();
+    }
+
+    async function main() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const resultDiv = document.getElementById('result');
 
       if (!code) {
-        document.getElementById('result').innerHTML = "<span class='error'>❌ Error: Missing code in URL</span>";
+        resultDiv.innerHTML = '<span class="error">❌ No code found in URL.</span>';
         return;
       }
 
-      const payload = {
-        code,
-        clientId: "0BAj33Q6SwYpuVNmwkasvQ",
-        clientSecret: "nSeGU9iT4OpD8gMKAkxXptt_cvxRTw",
-        redirectUri: "https://nate0911.github.io/Fancykarma/redirect.html"
-      };
-
       try {
-        const response = await fetch("https://fancykarma-backend.onrender.com/auth", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
+        const data = await fetchToken(code);
 
-        const data = await response.json();
         if (data.error) {
-          document.getElementById('result').innerHTML = `<span class='error'>❌ ${data.error}</span>`;
+          resultDiv.innerHTML = `<span class="error">❌ Error: ${data.error}</span>`;
+          return;
+        }
+
+        if (data.isSuspended || data.isBanned) {
+          resultDiv.innerHTML = '<span class="error">❌ This account is suspended or permanently banned.</span>';
+        } else if (data.karma >= 200 && data.account_age_months >= 8) {
+          resultDiv.innerHTML = `<span class="success">✅ Success! Your Reddit karma is: ${data.karma}</span>`;
         } else {
-          document.getElementById('result').innerHTML = `<span class='success'>✅ Your Reddit karma is: ${data.karma}</span>`;
+          resultDiv.innerHTML = `<span class="error">❌ Oops! You don’t have enough karma or account age is too young.</span>`;
         }
       } catch (err) {
-        document.getElementById('result').innerHTML = `<span class='error'>❌ Exception: ${err.message}</span>`;
+        resultDiv.innerHTML = '<span class="error">❌ Something went wrong.</span>';
+        console.error(err);
       }
     }
 
-    handleOAuthRedirect();
+    main();
   </script>
 </body>
 </html>
