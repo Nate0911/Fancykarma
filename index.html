@@ -1,60 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login with Reddit</title>
+  <meta charset="UTF-8">
+  <title>Fancy Karma Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #ffffff;
+    * {
       margin: 0;
       padding: 0;
-      text-align: center;
-      color: #1a1a1b;
+      box-sizing: border-box;
     }
-    header {
-      background-color: #ff4500;
-      padding: 1rem;
-    }
-    header img {
-      height: 40px;
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fdfdfd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
     .container {
-      padding: 3rem 1rem;
+      max-width: 400px;
+      width: 90%;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .logo {
+      width: 60px;
+      margin: 0 auto 1.5rem;
+    }
+    .headline {
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 2rem;
+      line-height: 1.6;
     }
     button {
       background-color: #ff4500;
-      color: #fff;
-      padding: 14px 24px;
-      font-size: 18px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
       border: none;
       border-radius: 8px;
+      padding: 0.75rem 2rem;
       cursor: pointer;
-      margin-top: 30px;
+      transition: background-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
-    button:hover {
-      background-color: #e03d00;
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 0%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.2);
+      transition: width 1s ease;
+      z-index: 0;
+    }
+    button:active::before {
+      width: 100%;
+    }
+    button span {
+      position: relative;
+      z-index: 1;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png" alt="Reddit Logo">
-  </header>
   <div class="container">
-    <h2>🔐 Log in with Reddit to check your karma</h2>
-    <button onclick="loginWithReddit()">Log In</button>
+    <img class="logo" src="https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png" alt="Reddit Logo">
+    <p class="headline">We need to first verify that you got the right Karma, Account age.</p>
+    <button onclick="loginWithReddit()"><span>Login with Reddit</span></button>
   </div>
 
   <script>
-    const CLIENT_ID = "0BAj33Q6SwYpuVNmwkasvQ";
-    const REDIRECT_URI = "https://nate0911.github.io/Fancykarma/redirect.html";
-    const SCOPE = "identity read";
-    const STATE = Math.random().toString(36).substring(2, 12);
-
     function loginWithReddit() {
-      const url = `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=code&state=${STATE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&duration=temporary&scope=${encodeURIComponent(SCOPE)}`;
+      const clientId = "0BAj33Q6SwYpuVNmwkasvQ";
+      const redirectUri = "https://nate0911.github.io/Fancykarma/redirect.html";
+      const state = Math.random().toString(36).substring(2);
+      const scope = "identity";
+      const url = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${state}&redirect_uri=${encodeURIComponent(redirectUri)}&duration=temporary&scope=${scope}`;
       window.location.href = url;
     }
   </script>
