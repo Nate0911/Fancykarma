@@ -1,43 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Fancy Karma Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verification</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: #fdfdfd;
+      background-color: #fafafa;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
+
     .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+      text-align: center;
       max-width: 400px;
       width: 90%;
-      background-color: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-      padding: 2.5rem 2rem;
-      text-align: center;
     }
+
     .logo {
       width: 60px;
-      margin: 0 auto 1.5rem;
+      margin-bottom: 1rem;
     }
-    .headline {
-      font-size: 1rem;
-      color: #444;
+
+    h1 {
+      font-size: 1.4rem;
+      color: #222;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 0.85rem;
+      color: #666;
       margin-bottom: 2rem;
-      line-height: 1.6;
     }
+
     button {
       background-color: #ff4500;
       color: white;
@@ -47,10 +53,25 @@
       border-radius: 8px;
       padding: 0.75rem 2rem;
       cursor: pointer;
-      transition: background-color 0.3s ease;
       position: relative;
       overflow: hidden;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
+
+    button:active::before {
+      width: 100%;
+    }
+
+    button svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+
     button::before {
       content: '';
       position: absolute;
@@ -58,12 +79,10 @@
       width: 0%;
       height: 100%;
       background-color: rgba(255, 255, 255, 0.2);
-      transition: width 1s ease;
+      transition: width 0.8s ease;
       z-index: 0;
     }
-    button:active::before {
-      width: 100%;
-    }
+
     button span {
       position: relative;
       z-index: 1;
@@ -73,8 +92,12 @@
 <body>
   <div class="container">
     <img class="logo" src="https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png" alt="Reddit Logo">
-    <p class="headline">We need to first verify that you got the right Karma, Account age.</p>
-    <button onclick="loginWithReddit()"><span>Login with Reddit</span></button>
+    <h1>Verification</h1>
+    <p>We need to first verify that you got the right Karma, Account age.</p>
+    <button onclick="loginWithReddit()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M400 224H48c-26.5 0-48 21.5-48 48v160c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zm-176 64c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32zm96-96H128v-48c0-35.3 28.7-64 64-64s64 28.7 64 64v48z"/></svg>
+      <span>Login with Reddit</span>
+    </button>
   </div>
 
   <script>
