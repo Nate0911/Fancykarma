@@ -41,49 +41,47 @@
 </head>
 <body>
   <div class="card">
-    <div class="loading">🔁 Processing Reddit Login...</div>
+    <div class="loading">🔄 Processing Reddit Login...</div>
     <div id="result"></div>
   </div>
 
   <script>
-    async function verifyRedditLogin() {
+    (async () => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
-      const errorDiv = document.getElementById('result');
+      const state = params.get('state');
+      const result = document.getElementById('result');
 
       if (!code) {
-        errorDiv.innerHTML = '<div class="error">❌ Missing code from Reddit</div>';
+        result.innerHTML = '<div class="error">❌ Missing authorization code.</div>';
         return;
       }
 
       try {
-        const response = await fetch('https://fancykarma-backend.onrender.com/auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("https://fancykarma-backend.onrender.com/auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            code,
-            redirect_uri: 'https://nate0911.github.io/Fancykarma/redirect.html'
+            code: code,
+            redirect_uri: "https://nate0911.github.io/Fancykarma/redirect.html"
           })
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-          errorDiv.innerHTML = `<div class="error">❌ Error: ${data.error || 'Something went wrong.'}</div>`;
-          return;
-        }
-
-        if (data.status === 'fail') {
-          errorDiv.innerHTML = `<div class="error">❌ ${data.message}</div>`;
+          result.innerHTML = `<div class="error">❌ Error: ${data.error || 'Something went wrong.'}</div>`;
         } else {
-          errorDiv.innerHTML = `<div class="success">✅ ${data.message || 'You passed verification!'}</div>`;
+          if (data.status === "fail") {
+            result.innerHTML = `<div class="error">❌ ${data.message}</div>`;
+          } else {
+            result.innerHTML = `<div class="success">✅ ${data.message}</div>`;
+          }
         }
       } catch (err) {
-        errorDiv.innerHTML = `<div class="error">❌ Request failed: ${err.message}</div>`;
+        result.innerHTML = `<div class="error">❌ Request failed: ${err.message}</div>`;
       }
-    }
-
-    verifyRedditLogin();
+    })();
   </script>
 </body>
 </html>
