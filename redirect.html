@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Verifying...</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reddit Verification</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -14,46 +15,71 @@
       height: 100vh;
       margin: 0;
     }
+
     .card {
       background: white;
-      padding: 40px;
+      padding: 2.5rem;
       border-radius: 20px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
       text-align: center;
       width: 90%;
       max-width: 480px;
     }
-    .loading {
-      font-size: 24px;
-      margin-bottom: 20px;
+
+    .card img {
+      width: 72px;
+      margin-bottom: 1rem;
     }
-    .error {
-      color: red;
-      font-weight: bold;
-      margin-top: 20px;
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin: 0 0 1rem;
     }
-    .success {
+
+    .status-message {
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+
+    .success-message {
       color: green;
-      font-weight: bold;
-      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    .error-message {
+      color: red;
+      font-weight: 600;
+    }
+
+    .loader-icon {
+      font-size: 1.2rem;
+      animation: rotate 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="loading">🔄 Processing Reddit Login...</div>
-    <div id="result"></div>
+    <img src="https://www.redditinc.com/assets/images/site/reddit-logo.png" alt="Reddit Logo">
+    <h2><span class="loader-icon">🔄</span> Processing Reddit Login...</h2>
+    <div id="result" class="status-message"></div>
   </div>
 
   <script>
-    (async () => {
+    async function verifyReddit() {
       const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      const state = params.get('state');
-      const result = document.getElementById('result');
+      const code = params.get("code");
+      const state = params.get("state");
 
-      if (!code) {
-        result.innerHTML = '<div class="error">❌ Missing authorization code.</div>';
+      if (!code || !state) {
+        document.getElementById("result").innerHTML = "<p class='error-message'>❌ Missing code or state</p>";
         return;
       }
 
@@ -62,26 +88,32 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            code: code,
+            code,
             redirect_uri: "https://nate0911.github.io/Fancykarma/redirect.html"
-          })
+          }),
         });
 
         const data = await response.json();
+        const resultDiv = document.getElementById("result");
 
-        if (!response.ok) {
-          result.innerHTML = `<div class="error">❌ Error: ${data.error || 'Something went wrong.'}</div>`;
+        if (data.status === "pass") {
+          resultDiv.innerHTML = `
+            <p class="success-message">✅ Verification passed!</p>
+            <p>Karma: <strong>${data.karma}</strong><br>Account Age: <strong>${data.age} months</strong></p>
+          `;
+        } else if (data.status === "fail") {
+          resultDiv.innerHTML = `<p class="error-message">❌ ${data.reason}</p>`;
         } else {
-          if (data.status === "fail") {
-            result.innerHTML = `<div class="error">❌ ${data.message}</div>`;
-          } else {
-            result.innerHTML = `<div class="success">✅ ${data.message}</div>`;
-          }
+          resultDiv.innerHTML = `<p class="error-message">❌ Unknown response from server</p>`;
         }
+
       } catch (err) {
-        result.innerHTML = `<div class="error">❌ Request failed: ${err.message}</div>`;
+        console.error(err);
+        document.getElementById("result").innerHTML = "<p class='error-message'>❌ Something went wrong</p>";
       }
-    })();
+    }
+
+    verifyReddit();
   </script>
 </body>
 </html>
