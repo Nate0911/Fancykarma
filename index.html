@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Reddit OAuth Login</title>
+  <title>Login with Reddit</title>
   <style>
     body { font-family: Arial; text-align: center; margin-top: 100px; }
     button {
@@ -17,18 +17,18 @@
   </style>
 </head>
 <body>
-  <h2>🔐 Login with Reddit</h2>
+  <h2>🔐 Login with Reddit to see your Karma BIIITCH</h2>
   <button onclick="loginWithReddit()">Log In</button>
 
   <script>
-    const CLIENT_ID = "REPLACE_WITH_YOUR_CLIENT_ID"; // From reddit.com/prefs/apps
-    const REDIRECT_URI = "https://nate0911.github.io/reddit-auth/redirect.html";
+    const CLIENT_ID = "0BAj33Q6SwYpuVNmwkasvQ";
+    const REDIRECT_URI = "https://nate0911.github.io/Fancykarma/redirect.html";
     const SCOPE = "identity read";
-    const STATE = Math.random().toString(36).substring(2, 12); // random string
+    const STATE = Math.random().toString(36).substring(2, 12);
 
     function loginWithReddit() {
-      const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=code&state=${STATE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&duration=temporary&scope=${encodeURIComponent(SCOPE)}`;
-      window.location.href = authUrl;
+      const url = `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=code&state=${STATE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&duration=temporary&scope=${encodeURIComponent(SCOPE)}`;
+      window.location.href = url;
     }
   </script>
 </body>
