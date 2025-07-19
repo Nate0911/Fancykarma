@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Reddit Redirect</title>
+</head>
+<body>
+  <h2>🔄 Processing login...</h2>
+  <div id="output"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    const state = urlParams.get("state");
+    const error = urlParams.get("error");
+
+    const output = document.getElementById("output");
+
+    if (error) {
+      output.innerHTML = `❌ Error: ${error}`;
+    } else if (code) {
+      output.innerHTML = `✅ Authorization Code: <code>${code}</code><br><br>
+        (Now send this code to your Cloudflare Worker to get the access token.)`;
+    } else {
+      output.innerHTML = `⚠️ No code received.`;
+    }
+  </script>
+</body>
+</html>
