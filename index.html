@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Reddit OAuth Login</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 100px; }
+    button {
+      background-color: #ff4500;
+      color: white;
+      padding: 14px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>🔐 Login with Reddit</h2>
+  <button onclick="loginWithReddit()">Log In</button>
+
+  <script>
+    const CLIENT_ID = "REPLACE_WITH_YOUR_CLIENT_ID"; // From reddit.com/prefs/apps
+    const REDIRECT_URI = "https://nate0911.github.io/reddit-auth/redirect.html";
+    const SCOPE = "identity read";
+    const STATE = Math.random().toString(36).substring(2, 12); // random string
+
+    function loginWithReddit() {
+      const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=code&state=${STATE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&duration=temporary&scope=${encodeURIComponent(SCOPE)}`;
+      window.location.href = authUrl;
+    }
+  </script>
+</body>
+</html>
