@@ -1,122 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verifying... | Reddit Karma Checker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Verifying...</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f8f8f8;
-      color: #333;
-      text-align: center;
-      padding: 4rem 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    img.logo {
-      height: 50px;
-      margin-bottom: 1.5rem;
-    }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      max-width: 450px;
-      width: 100%;
-    }
-    h2 {
-      font-weight: 600;
-      font-size: 1.6rem;
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 0.95rem;
-      color: #666;
-    }
-    .status-box {
-      margin-top: 2rem;
-      padding: 15px;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      background: #f0f2f5;
-    }
-    .loading { color: #007bff; }
-    .success { color: #28a745; background: #e8f5e9; }
-    .fail { color: #dc3545; background: #ffebee; }
-    
-    /* Small spinner animation */
-    .spinner {
-      border: 4px solid rgba(0, 0, 0, 0.1);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border-left-color: #FF4500;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    body { background: #0b0b0b; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+    .loader { border: 4px solid #333; border-top: 4px solid #FF4500; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-  <div class="card">
-    <img src="https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png" class="logo" alt="Reddit Logo">
-    <h2>Account Verification</h2>
-    <p>Please wait while we check your Reddit account status and karma levels.</p>
-    
-    <div id="result" class="status-box">
-      <div class="spinner"></div> <span class="loading">Processing Reddit Login...</span>
-    </div>
+  <div>
+    <div class="loader"></div>
+    <p id="msg">Verifying Reddit Account...</p>
   </div>
 
- /* ... (Keep your existing Card/Spinner HTML and CSS) ... */
+  <script>
+    async function init() {
+      const code = new URLSearchParams(window.location.search).get('code');
+      if(!code) { document.getElementById('msg').innerText = "Error: No Code Provided."; return; }
 
-<script>
-  async function verifyReddit() {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    const resultDiv = document.getElementById('result');
+      try {
+        const response = await fetch('https://fancykarma-backend.onrender.com/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code, redirect_uri: "https://nate0911.github.io/Fancykarma/redirect.html" })
+        });
+        const data = await response.json();
 
-    if (!code) {
-      resultDiv.className = "status-box fail";
-      resultDiv.innerHTML = "❌ Auth Denied.";
-      return;
-    }
-
-    try {
-      const response = await fetch('https://fancykarma-backend.onrender.com/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: code, redirect_uri: "https://nate0911.github.io/Fancykarma/redirect.html" })
-      });
-
-      const data = await response.json();
-
-      if (data.status === 'pass') {
-        resultDiv.className = "status-box success";
-        resultDiv.innerHTML = "✅ Verified! Loading task...";
-        if (window.opener) {
-          window.opener.postMessage(data, "*"); 
-          setTimeout(() => window.close(), 1000);
+        if (data.status === 'pass') {
+          // Send data to index.html and go back
+          if (window.opener) {
+            window.opener.postMessage(data, "*");
+            window.close();
+          } else {
+            // If they aren't using a popup, we redirect back to index.html
+            // The index.html will pick up the task from localStorage
+            localStorage.setItem('activeTask', JSON.stringify(data.task));
+            window.location.href = "index.html";
+          }
+        } else {
+          document.getElementById('msg').innerText = "❌ " + data.reason;
         }
-      } else {
-        resultDiv.className = "status-box fail";
-        resultDiv.innerHTML = `❌ ${data.reason}`;
+      } catch (err) {
+        document.getElementById('msg').innerText = "❌ Server Connection Failed.";
       }
-    } catch (err) {
-      resultDiv.innerHTML = "❌ Server Error";
     }
-  }
-  verifyReddit();
-</script>
+    init();
+  </script>
 </body>
 </html>
