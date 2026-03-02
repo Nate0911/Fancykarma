@@ -2,23 +2,36 @@
 <html>
 <head>
     <title>Verifying...</title>
-    <style>body { background: #000; color: #FF4500; font-family: 'Verdana', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }</style>
+    <style>
+        body { background: #0b0e11; color: white; font-family: 'Verdana', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+        .data-box { background: #1a1a1b; padding: 20px; border-radius: 10px; border: 1px solid #333; }
+    </style>
 </head>
 <body>
-    <div id="msg">PROCESSING...</div>
+    <div id="display" class="data-box">Verifying Account Stats...</div>
+
     <script>
         const code = new URLSearchParams(window.location.search).get('code');
+        const display = document.getElementById('display');
+
         if (code) {
             fetch('https://fancykarma-backend.onrender.com/verify-reddit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: code })
+                body: JSON.stringify({ code })
             })
-            .then(r => r.json())
+            .then(res => res.json())
             .then(data => {
-                document.getElementById('msg').innerText = data.eligible ? `WELCOME ${data.username}!` : "REQUIREMENTS NOT MET";
+                if (data.eligible) {
+                    display.innerHTML = `<h2 style="color:#00ff00">SUCCESS</h2>Welcome, ${data.username}!<br>Karma: ${data.details.karma} | Age: ${data.details.age} days`;
+                } else {
+                    display.innerHTML = `<h2 style="color:#ff4444">REQUIREMENTS NOT MET</h2>
+                                         User: ${data.username}<br>
+                                         Your Karma: ${data.details.karma} (Need 1)<br>
+                                         Your Age: ${data.details.age} days (Need 90)`;
+                }
             })
-            .catch(() => { document.getElementById('msg').innerText = "SERVER ERROR (401)"; });
+            .catch(() => { display.innerText = "Error connecting to backend."; });
         }
     </script>
 </body>
