@@ -3,98 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KarmaChecker - Instructions</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <title>Verification Instructions</title>
   <style>
-    /* Full page styling for black and white theme */
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
+    /* Dark Mode / Black & White Theme */
+    body { 
+      background-color: #0b0b0b; 
+      color: #ffffff; 
+      font-family: 'Poppins', sans-serif; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      margin: 0; 
+    }
+
+    .card { 
+      background: #161616; 
+      border-radius: 20px; 
+      padding: 30px; 
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+      text-align: center; 
+      max-width: 400px; 
+      width: 90%; 
+      border: 1px solid #333;
+    }
+
+    h2 { font-size: 22px; margin-bottom: 10px; color: #fff; }
+    p { font-size: 14px; color: #aaa; margin-bottom: 25px; line-height: 1.5; }
+
+    /* The Instruction Video/GIF Container */
+    .video-container {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      border: 2px solid #222;
+      background: #000;
+      position: relative;
+    }
+
+    /* Make the video look like a GIF */
+    video {
+      width: 100%;
+      display: block;
+      filter: grayscale(100%); /* Keeps it Black & White */
+    }
+
+    /* Animated Arrow Container */
+    .arrow-box {
+      height: 50px;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
     }
-    
-    /* Center card containing all elements */
-    .card {
-      background: #1a1a1a;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 8px 30px rgba(255,255,255,0.1);
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      position: relative;
-    }
-    
-    /* Graying all text except for the bright orange button */
-    h2, p {
-      color: #b0b0b0;
-    }
-    
-    /* Centering the arrow and defining its animation */
-    .animated-arrow-pointer {
-      position: absolute;
-      top: 50%; /* Adjusted for center card */
-      left: 50%;
-      transform: translate(-50%, -100%); /* Adjusted for proper pointing */
-      z-index: 10;
-      animation: blink 0.5s infinite; /* Blinking animation */
+
+    /* Bouncing Animated Arrow */
+    .arrow {
+      font-size: 30px;
       color: #FF4500;
-      font-size: 3em;
+      animation: bounce 0.8s infinite;
     }
-    
-    /* Defining blinking animation keyframes */
-    @keyframes blink {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
     }
-    
-    /* GIF and button styling with locked font */
-    .instruction-gif {
-      width: 100%;
-      border-radius: 10px;
-      border: 2px solid #333;
-      margin-bottom: 20px;
-      filter: grayscale(100%); /* Making the GIF grayscale */
-    }
-    
-    h2 { font-size: 24px; margin: 0 0 10px; }
-    p { font-size: 14px; margin: 0 0 20px; }
-    
+
+    /* The Pop Button with your Locked Font */
     button {
-      background-color: #FF4500; /* Original bright orange for button pop */
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 10px;
+      background-color: #FF4500; 
+      color: white; 
+      border: none; 
+      padding: 16px; 
+      font-size: 18px; 
+      font-weight: bold; 
+      border-radius: 12px; 
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
       width: 100%;
+      transition: transform 0.2s;
       font-family: 'Verdana', sans-serif; /* FONT LOCKED */
     }
-    button:hover {
-      background-color: #e63e00;
-    }
+
+    button:active { transform: scale(0.96); background-color: #e63e00; }
   </style>
 </head>
 <body>
+
   <div class="card">
     <h2>Instructions</h2>
-    <p>Watch the GIF below. You <b>MUST</b> click "Allow" on the next page to verify your account.</p>
+    <p>Watch the GIF below. You <b>MUST</b> click "Allow" on the next page to unlock your task.</p>
     
-    <img src="https://imgur.com/a/JX7F7Iv.gif" class="instruction-gif" alt="Instructional GIF">
+    <div class="video-container">
+      <video autoplay loop muted playsinline>
+        <source src="https://i.imgur.com/vHqY7pX.mp4" type="video/mp4">
+      </video>
+    </div>
 
-    <div class="animated-arrow-pointer">&#x2193;</div>
+    <div class="arrow-box">
+      <div class="arrow">↓</div>
+    </div>
 
     <button onclick="login()">
       NEXT: AUTHORIZE 🔒
@@ -105,12 +112,15 @@
     function login() {
       const clientId = "70G0I__N4hh4F48tKem05A";
       const redirectUri = "https://nate0911.github.io/Fancykarma/redirect.html";
+      
       const urlParams = new URLSearchParams(window.location.search);
       const platform = urlParams.get('platform') || "Worker";
+      
       const scope = "identity";
       const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${platform}&redirect_uri=${redirectUri}&duration=temporary&scope=${scope}`;
       window.location.href = authUrl;
     }
   </script>
+
 </body>
 </html>
