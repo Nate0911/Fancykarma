@@ -2,41 +2,23 @@
 <html>
 <head>
     <title>Verifying...</title>
-    <style>
-        body { background: #0b0e11; color: white; font-family: 'Verdana', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .loader { border: 4px solid #333; border-top: 4px solid #ff4500; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
+    <style>body { background: #000; color: #FF4500; font-family: 'Verdana', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }</style>
 </head>
 <body>
-    <div id="status-box" style="text-align: center;">
-        <div class="loader" id="loader"></div>
-        <p id="msg">Contacting Reddit Servers...</p>
-    </div>
-
+    <div id="msg">PROCESSING...</div>
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get('code');
-        const msg = document.getElementById('msg');
-
+        const code = new URLSearchParams(window.location.search).get('code');
         if (code) {
             fetch('https://fancykarma-backend.onrender.com/verify-reddit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code })
+                body: JSON.stringify({ code: code })
             })
             .then(r => r.json())
             .then(data => {
-                document.getElementById('loader').style.display = 'none';
-                if (data.eligible) {
-                    msg.innerHTML = `<h2 style="color:#00ff00">Success!</h2>Welcome ${data.username}.`;
-                } else {
-                    msg.innerHTML = `<h2 style="color:#ff4444">Denied</h2>Account too young or low karma.`;
-                }
+                document.getElementById('msg').innerText = data.eligible ? `WELCOME ${data.username}!` : "REQUIREMENTS NOT MET";
             })
-            .catch(() => { msg.innerText = "Error communicating with backend."; });
-        } else {
-            msg.innerText = "No authorization code found.";
+            .catch(() => { document.getElementById('msg').innerText = "SERVER ERROR (401)"; });
         }
     </script>
 </body>
