@@ -1,33 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>FancyKarma</title>
     <style>
-        body { background: #0b0e11; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
-        .card { background: #1a1a1b; padding: 40px; border-radius: 20px; text-align: center; border: 1px solid #333; width: 340px; }
-        
-        /* Locked Font for Buttons [cite: 2026-02-25] */
-        button { 
-            font-family: 'Verdana', sans-serif !important; 
-            background: #FF4500; color: white; border: none; padding: 15px; 
-            border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px;
-        }
-
-        .status { font-size: 12px; color: #888; margin: 15px 0; }
-        .dot { height: 8px; width: 8px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px #00ff00; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        
-        video { border-radius: 12px; margin-bottom: 10px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        body { background: #0b0e11; color: white; text-align: center; padding-top: 50px; font-family: sans-serif; }
+        .card { background: #1a1a1b; padding: 30px; border-radius: 15px; display: inline-block; border: 1px solid #333; }
+        /* Verdana Locked Font [cite: 2026-02-25] */
+        button { font-family: 'Verdana', sans-serif !important; background: #FF4500; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .dot { height: 10px; width: 10px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px #00ff00; }
+        video { width: 300px; border-radius: 10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <div class="card">
         <video autoplay loop muted playsinline><source src="https://i.imgur.com/SVGjM9E.mp4" type="video/mp4"></video>
-        <div class="status"><span class="dot"></span> SYSTEM READY</div>
+        <p><span class="dot"></span> SYSTEM READY</p>
         <button onclick="login()">CONNECT REDDIT</button>
     </div>
-
     <script>
         function login() {
             const cid = 'u8MeOBIFfObKKRsdmExg_w';
