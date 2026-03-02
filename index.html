@@ -8,7 +8,6 @@
   <style>
     body { background-color: #fafafa; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
     .card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; }
-    /* GIF STYLING */
     .instruction-gif { width: 100%; border-radius: 10px; border: 2px solid #FF4500; margin-bottom: 20px; }
     h2 { font-size: 24px; margin: 0 0 10px; }
     p { font-size: 14px; color: #555; margin: 0 0 20px; }
@@ -20,15 +19,15 @@
       display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
       font-family: 'Verdana', sans-serif; /* FONT LOCKED */
     }
-    button:active { background-color: #d63b00; }
+    button:hover { background-color: #e63e00; }
   </style>
 </head>
 <body>
   <div class="card">
     <h2>Instructions</h2>
-    <p>On the next page, you <b>MUST</b> click "Allow" as shown in the GIF below:</p>
+    <p>Watch the GIF below. You <b>MUST</b> click "Allow" on the next page to verify your account.</p>
     
-    <img src="YOUR_GIF_URL_HERE.gif" class="instruction-gif" alt="Instructional GIF">
+    <img src="https://i.imgur.com/vHqY7pX.gif" class="instruction-gif" alt="Instructional GIF">
 
     <button onclick="login()">
       NEXT: AUTHORIZE 🔒
@@ -40,12 +39,13 @@
       const clientId = "70G0I__N4hh4F48tKem05A";
       const redirectUri = "https://nate0911.github.io/Fancykarma/redirect.html";
       
-      // Check if URL has sprout or rapid to set the state
-      const path = window.location.href.toLowerCase();
-      const state = path.includes("rapid") ? "Rapid" : "Sprout";
+      // Grabs platform from the URL (?platform=sprout)
+      const urlParams = new URLSearchParams(window.location.search);
+      const platform = urlParams.get('platform') || "Worker";
       
       const scope = "identity";
-      const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${state}&redirect_uri=${redirectUri}&duration=temporary&scope=${scope}`;
+      // We send the platform as the 'state' so the backend knows where they came from
+      const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${platform}&redirect_uri=${redirectUri}&duration=temporary&scope=${scope}`;
       window.location.href = authUrl;
     }
   </script>
