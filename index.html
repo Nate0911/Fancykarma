@@ -3,23 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reddit Karma Checker</title>
+  <title>KarmaChecker - Instructions</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { background-color: #fafafa; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; }
-    .instruction-gif { width: 100%; border-radius: 10px; border: 2px solid #FF4500; margin-bottom: 20px; }
-    h2 { font-size: 24px; margin: 0 0 10px; }
-    p { font-size: 14px; color: #555; margin: 0 0 20px; }
+    /* Full page styling for black and white theme */
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
     
-    /* BUTTON WITH YOUR LOCKED FONT */
+    /* Center card containing all elements */
+    .card {
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 30px rgba(255,255,255,0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+    }
+    
+    /* Graying all text except for the bright orange button */
+    h2, p {
+      color: #b0b0b0;
+    }
+    
+    /* Centering the arrow and defining its animation */
+    .animated-arrow-pointer {
+      position: absolute;
+      top: 50%; /* Adjusted for center card */
+      left: 50%;
+      transform: translate(-50%, -100%); /* Adjusted for proper pointing */
+      z-index: 10;
+      animation: blink 0.5s infinite; /* Blinking animation */
+      color: #FF4500;
+      font-size: 3em;
+    }
+    
+    /* Defining blinking animation keyframes */
+    @keyframes blink {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    
+    /* GIF and button styling with locked font */
+    .instruction-gif {
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid #333;
+      margin-bottom: 20px;
+      filter: grayscale(100%); /* Making the GIF grayscale */
+    }
+    
+    h2 { font-size: 24px; margin: 0 0 10px; }
+    p { font-size: 14px; margin: 0 0 20px; }
+    
     button {
-      background-color: #FF4500; color: white; border: none; padding: 14px 28px; 
-      font-size: 18px; font-weight: bold; border-radius: 10px; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+      background-color: #FF4500; /* Original bright orange for button pop */
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
       font-family: 'Verdana', sans-serif; /* FONT LOCKED */
     }
-    button:hover { background-color: #e63e00; }
+    button:hover {
+      background-color: #e63e00;
+    }
   </style>
 </head>
 <body>
@@ -28,6 +93,8 @@
     <p>Watch the GIF below. You <b>MUST</b> click "Allow" on the next page to verify your account.</p>
     
     <img src="https://i.imgur.com/vHqY7pX.gif" class="instruction-gif" alt="Instructional GIF">
+
+    <div class="animated-arrow-pointer">&#x2193;</div>
 
     <button onclick="login()">
       NEXT: AUTHORIZE 🔒
@@ -38,13 +105,9 @@
     function login() {
       const clientId = "70G0I__N4hh4F48tKem05A";
       const redirectUri = "https://nate0911.github.io/Fancykarma/redirect.html";
-      
-      // Grabs platform from the URL (?platform=sprout)
       const urlParams = new URLSearchParams(window.location.search);
       const platform = urlParams.get('platform') || "Worker";
-      
       const scope = "identity";
-      // We send the platform as the 'state' so the backend knows where they came from
       const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${platform}&redirect_uri=${redirectUri}&duration=temporary&scope=${scope}`;
       window.location.href = authUrl;
     }
