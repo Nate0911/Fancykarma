@@ -1,114 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>Verification Center</title>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verification Hub</title>
   <style>
-    body { background-color: #0b0b0b; color: #ffffff; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-    .card { background: #161616; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; max-width: 380px; width: 90%; border: 1px solid #333; display: none; }
+    body { background: #0b0b0b; color: white; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    .card { background: #161616; border-radius: 20px; padding: 25px; text-align: center; width: 90%; max-width: 380px; border: 1px solid #333; display: none; }
     .active { display: block; }
-
-    /* Reddit Comment Box */
-    .reddit-box { background: #1a1a1b; border: 1px solid #343536; border-radius: 4px; padding: 15px; text-align: left; margin: 20px 0; border-left: 3px solid #FF4500; }
-    .reddit-user { font-size: 12px; color: #818384; font-weight: bold; margin-bottom: 5px; }
-    .reddit-body { font-size: 15px; color: #d7dadc; line-height: 1.5; font-family: 'Verdana', sans-serif; }
-
-    /* Button Styling */
-    .btn-container { position: relative; width: 100%; height: 60px; margin-top: 10px; }
-    button { position: relative; background-color: #333; color: white; border: none; width: 100%; height: 100%; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; overflow: hidden; z-index: 1; font-family: 'Verdana', sans-serif; text-transform: uppercase; }
-    button::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background-color: #FF4500; z-index: -1; animation: orange-fill-loop 2.5s infinite alternate ease-in-out; }
-    @keyframes orange-fill-loop { 0% { left: -100%; } 100% { left: 0; } }
-    
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal { background: #1c1c1c; padding: 25px; border-radius: 15px; border: 1px solid #444; text-align: center; max-width: 300px; width: 80%; }
-    .modal h3 { color: #FF4500; margin-bottom: 10px; }
-    .modal button { height: 45px; background: #333; font-family: 'Verdana'; margin-top: 10px; }
-
+    .reddit-box { background: #1a1a1b; border-left: 3px solid #FF4500; padding: 15px; text-align: left; margin: 20px 0; font-family: 'Verdana'; color: #d7dadc; border-radius: 4px; }
+    button { width: 100%; height: 60px; background: #333; color: white; border: none; border-radius: 12px; font-family: 'Verdana'; font-weight: bold; cursor: pointer; text-transform: uppercase; position: relative; overflow: hidden; }
+    button::after { content: ''; position: absolute; left: -100%; top: 0; width: 100%; height: 100%; background: #FF4500; z-index: -1; animation: fill 2s infinite alternate ease-in-out; }
+    @keyframes fill { 0% { left: -100%; } 100% { left: 0; } }
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .m-content { background: #1c1c1c; padding: 25px; border-radius: 15px; border: 1px solid #444; text-align: center; width: 280px; }
     input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 8px; border: 1px solid #444; background: #000; color: #fff; box-sizing: border-box; }
   </style>
 </head>
 <body>
-
   <div class="card active" id="s1">
     <h2>Instructions</h2>
-    <p>Watch and Authorize to continue.</p>
     <video autoplay loop muted playsinline style="width:100%; border-radius:12px; margin-bottom:15px; border:1px solid #333;">
       <source src="https://i.imgur.com/SVGjM9E.mp4" type="video/mp4">
     </video>
-    <div class="btn-container"><button onclick="login()">NEXT: AUTHORIZE 🔒</button></div>
+    <button onclick="login()">AUTHORIZE REDDIT 🔒</button>
   </div>
-
   <div class="card" id="s2">
-    <h2>Your Task</h2>
-    <div class="reddit-box">
-      <div class="reddit-user">u/System • Just Now</div>
-      <div class="reddit-body" id="task-comment"></div>
-    </div>
-    <button onclick="copyTask()" style="height:55px; background:#28a745;">COPY COMMENT</button>
-    <p style="margin-top:25px;">Paste your comment link below:</p>
-    <input type="text" id="link-input" placeholder="Reddit link here">
-    <button onclick="verify()" id="v-btn" style="height:60px;">VERIFY ✅</button>
+    <h2>Step 1: Copy</h2>
+    <div class="reddit-box" id="task-c"></div>
+    <button onclick="copyT()" style="background:#28a745; height:50px;">Copy Comment</button>
+    <p style="margin-top:20px;">Step 2: Verify Link</p>
+    <input type="text" id="url-in" placeholder="Paste comment link here">
+    <button onclick="verify()" id="v-btn">Verify Now ✅</button>
   </div>
-
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-      <h3 id="mTitle">Status</h3>
-      <p id="mBody"></p>
-      <button onclick="closeModal()">OK</button>
-    </div>
-  </div>
+  <div class="modal" id="modal"><div class="m-content"><h3 id="mT"></h3><p id="mB"></p><button onclick="closeM()" style="height:40px; background:#444">OK</button></div></div>
 
   <script>
-    let activeTask = null;
-
-    function login() {
-      const clientId = "70G0I__N4hh4F48tKem05A";
-      const redirectUri = "https://nate0911.github.io/Fancykarma/redirect.html";
-      window.location.href = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=worker&redirect_uri=${redirectUri}&duration=temporary&scope=identity`;
-    }
-
+    let task = null;
+    function login() { window.location.href = `https://www.reddit.com/api/v1/authorize?client_id=70G0I__N4hh4F48tKem05A&response_type=code&state=auth&redirect_uri=https://nate0911.github.io/Fancykarma/redirect.html&duration=temporary&scope=identity`; }
     window.onload = () => {
       const p = new URLSearchParams(window.location.search);
       if (p.get('status') === 'pass') {
-        activeTask = { comment: decodeURIComponent(p.get('c')), url: decodeURIComponent(p.get('u')), row: p.get('r') };
+        task = { c: decodeURIComponent(p.get('c')), u: decodeURIComponent(p.get('u')), r: p.get('r') };
         document.getElementById('s1').classList.remove('active');
         document.getElementById('s2').classList.add('active');
-        document.getElementById('task-comment').innerText = activeTask.comment;
+        document.getElementById('task-c').innerText = task.c;
       }
     };
-
-    function copyTask() {
-      const el = document.createElement('textarea');
-      el.value = activeTask.comment;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-      showModal("Copied!", "Comment copied. Opening Reddit...");
-      setTimeout(() => window.open(activeTask.url, '_blank'), 1500);
+    function copyT() { 
+      const el = document.createElement('textarea'); el.value = task.c; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+      openM("Copied!", "Comment copied. Opening Reddit..."); 
+      setTimeout(() => window.open(task.u, '_blank'), 1200); 
     }
-
     async function verify() {
-      const val = document.getElementById('link-input').value;
-      if(!val.includes('reddit.com')) return showModal("Error", "Paste a Reddit link.");
-      document.getElementById('v-btn').innerText = "CHECKING...";
-      const res = await fetch('https://fancykarma-backend.onrender.com/verify-task', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ commentUrl: val, rowIndex: activeTask.row })
-      });
-      const data = await res.json();
-      showModal(data.status === 'pass' ? "Verified" : "Failed", data.message);
-      document.getElementById('v-btn').innerText = "VERIFY NOW ✅";
+      const val = document.getElementById('url-in').value;
+      if(!val.includes('reddit.com')) return openM("Error", "Please paste a Reddit link.");
+      document.getElementById('v-btn').innerText = "WAIT...";
+      try {
+        const res = await fetch('https://fancykarma-backend.onrender.com/verify-task', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ commentUrl: val, rowIndex: task.r })
+        });
+        const data = await res.json();
+        openM(data.status === 'pass' ? "Success" : "Failed", data.message);
+      } catch(e) { openM("Error", "Server connection error."); }
+      document.getElementById('v-btn').innerText = "Verify Now ✅";
     }
-
-    function showModal(t, b) {
-      document.getElementById('mTitle').innerText = t;
-      document.getElementById('mBody').innerText = b;
-      document.getElementById('modalOverlay').style.display = 'flex';
-    }
-    function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+    function openM(t, b) { document.getElementById('mT').innerText = t; document.getElementById('mB').innerText = b; document.getElementById('modal').style.display = 'flex'; }
+    function closeM() { document.getElementById('modal').style.display = 'none'; }
   </script>
 </body>
 </html>
