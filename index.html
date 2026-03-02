@@ -4,39 +4,56 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Verification Hub</title>
   <style>
-    body { background: #0b0b0b; color: white; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    body { background: #0b0b0b; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
     .card { background: #161616; border-radius: 20px; padding: 25px; text-align: center; width: 90%; max-width: 380px; border: 1px solid #333; display: none; }
     .active { display: block; }
+    .status-bar { display: flex; align-items: center; justify-content: center; font-size: 11px; margin-bottom: 15px; background: #000; padding: 6px; border-radius: 20px; border: 1px solid #222; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; background: #ff4444; }
+    .online { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
+    
+    /* Button font locked to Verdana */
+    button { width: 100%; height: 60px; background: #333; color: white; border: none; border-radius: 12px; font-family: 'Verdana'; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+    button:disabled { opacity: 0.4; }
+    
     .reddit-box { background: #1a1a1b; border-left: 3px solid #FF4500; padding: 15px; text-align: left; margin: 20px 0; font-family: 'Verdana'; color: #d7dadc; border-radius: 4px; }
-    button { width: 100%; height: 60px; background: #333; color: white; border: none; border-radius: 12px; font-family: 'Verdana'; font-weight: bold; cursor: pointer; text-transform: uppercase; position: relative; overflow: hidden; }
-    button::after { content: ''; position: absolute; left: -100%; top: 0; width: 100%; height: 100%; background: #FF4500; z-index: -1; animation: fill 2s infinite alternate ease-in-out; }
-    @keyframes fill { 0% { left: -100%; } 100% { left: 0; } }
-    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1000; }
-    .m-content { background: #1c1c1c; padding: 25px; border-radius: 15px; border: 1px solid #444; text-align: center; width: 280px; }
-    input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 8px; border: 1px solid #444; background: #000; color: #fff; box-sizing: border-box; }
   </style>
 </head>
 <body>
   <div class="card active" id="s1">
-    <h2>Instructions</h2>
-    <video autoplay loop muted playsinline style="width:100%; border-radius:12px; margin-bottom:15px; border:1px solid #333;">
-      <source src="https://i.imgur.com/SVGjM9E.mp4" type="video/mp4">
-    </video>
-    <button onclick="login()">AUTHORIZE REDDIT 🔒</button>
+    <div class="status-bar"><div class="dot" id="dot"></div><span id="statText">WAKING UP SERVER...</span></div>
+    <h2>Welcome</h2>
+    <button id="authBtn" onclick="login()" disabled>Authorize Reddit 🔒</button>
   </div>
+
   <div class="card" id="s2">
-    <h2>Step 1: Copy</h2>
+    <h2>Your Task</h2>
     <div class="reddit-box" id="task-c"></div>
-    <button onclick="copyT()" style="background:#28a745; height:50px;">Copy Comment</button>
-    <p style="margin-top:20px;">Step 2: Verify Link</p>
-    <input type="text" id="url-in" placeholder="Paste comment link here">
-    <button onclick="verify()" id="v-btn">Verify Now ✅</button>
+    <button onclick="copyT()" style="background:#28a745; height:50px;">Copy & Open Post</button>
+    <input type="text" id="url-in" placeholder="Paste link here" style="width:100%; margin:15px 0; padding:12px; border-radius:8px; background:#000; color:#fff; border:1px solid #444;">
+    <button onclick="verify()">Verify Now ✅</button>
   </div>
-  <div class="modal" id="modal"><div class="m-content"><h3 id="mT"></h3><p id="mB"></p><button onclick="closeM()" style="height:40px; background:#444">OK</button></div></div>
 
   <script>
     let task = null;
-    function login() { window.location.href = `https://www.reddit.com/api/v1/authorize?client_id=70G0I__N4hh4F48tKem05A&response_type=code&state=auth&redirect_uri=https://nate0911.github.io/Fancykarma/redirect.html&duration=temporary&scope=identity`; }
+    const backend = "https://fancykarma-backend.onrender.com";
+
+    async function checkServer() {
+      try {
+        const r = await fetch(backend + "/ping");
+        const d = await r.json();
+        if(d.status === "online") {
+          document.getElementById('dot').classList.add('online');
+          document.getElementById('statText').innerText = "SYSTEM READY";
+          document.getElementById('authBtn').disabled = false;
+        }
+      } catch(e) { setTimeout(checkServer, 3000); }
+    }
+    checkServer();
+
+    function login() { 
+      window.location.href = `https://www.reddit.com/api/v1/authorize?client_id=u8MeOBIFfObKKRsdmExg_w&response_type=code&state=auth&redirect_uri=https://nate0911.github.io/Fancykarma/redirect.html&duration=temporary&scope=identity`; 
+    }
+    
     window.onload = () => {
       const p = new URLSearchParams(window.location.search);
       if (p.get('status') === 'pass') {
@@ -46,27 +63,15 @@
         document.getElementById('task-c').innerText = task.c;
       }
     };
-    function copyT() { 
-      const el = document.createElement('textarea'); el.value = task.c; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-      openM("Copied!", "Comment copied. Opening Reddit..."); 
-      setTimeout(() => window.open(task.u, '_blank'), 1200); 
-    }
+    function copyT() { navigator.clipboard.writeText(task.c); window.open(task.u, '_blank'); }
     async function verify() {
       const val = document.getElementById('url-in').value;
-      if(!val.includes('reddit.com')) return openM("Error", "Please paste a Reddit link.");
-      document.getElementById('v-btn').innerText = "WAIT...";
-      try {
-        const res = await fetch('https://fancykarma-backend.onrender.com/verify-task', {
-          method: 'POST', headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ commentUrl: val, rowIndex: task.r })
-        });
-        const data = await res.json();
-        openM(data.status === 'pass' ? "Success" : "Failed", data.message);
-      } catch(e) { openM("Error", "Server connection error."); }
-      document.getElementById('v-btn').innerText = "Verify Now ✅";
+      const res = await fetch(backend + '/verify-task', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ commentUrl: val, rowIndex: task.r })
+      });
+      const d = await res.json(); alert(d.message);
     }
-    function openM(t, b) { document.getElementById('mT').innerText = t; document.getElementById('mB').innerText = b; document.getElementById('modal').style.display = 'flex'; }
-    function closeM() { document.getElementById('modal').style.display = 'none'; }
   </script>
 </body>
 </html>
