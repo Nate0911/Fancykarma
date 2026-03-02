@@ -2,36 +2,40 @@
 <html>
 <head>
     <title>Verifying...</title>
-    <style>
-        body { background: #0b0e11; color: white; font-family: 'Verdana', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-        .data-box { background: #1a1a1b; padding: 20px; border-radius: 10px; border: 1px solid #333; }
-    </style>
+    <style>body { background: #0b0e11; color: white; font-family: 'Verdana', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }</style>
 </head>
 <body>
-    <div id="display" class="data-box">Verifying Account Stats...</div>
+    <div id="status">CONNECTING TO BACKEND...</div>
 
     <script>
         const code = new URLSearchParams(window.location.search).get('code');
-        const display = document.getElementById('display');
+        const status = document.getElementById('status');
 
         if (code) {
+            // FIXED: Ensure this URL is exactly your Render URL
             fetch('https://fancykarma-backend.onrender.com/verify-reddit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code })
+                body: JSON.stringify({ code: code })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Backend responded with error ' + res.status);
+                return res.json();
+            })
             .then(data => {
                 if (data.eligible) {
-                    display.innerHTML = `<h2 style="color:#00ff00">SUCCESS</h2>Welcome, ${data.username}!<br>Karma: ${data.details.karma} | Age: ${data.details.age} days`;
+                    status.innerHTML = `<h2 style="color:#00ff00">SUCCESS</h2>Welcome ${data.username}!<br>Karma: ${data.details.karma} | Age: ${data.details.age} days`;
                 } else {
-                    display.innerHTML = `<h2 style="color:#ff4444">REQUIREMENTS NOT MET</h2>
-                                         User: ${data.username}<br>
-                                         Your Karma: ${data.details.karma} (Need 1)<br>
-                                         Your Age: ${data.details.age} days (Need 90)`;
+                    status.innerHTML = `<h2 style="color:#ff4444">NOT ELIGIBLE</h2>User: ${data.username}<br>Karma: ${data.details.karma} (Need 1)<br>Age: ${data.details.age} days (Need 90)`;
                 }
             })
-            .catch(() => { display.innerText = "Error connecting to backend."; });
+            .catch(err => {
+                status.innerHTML = `<h2 style="color:#ff4444">CONNECTION ERROR</h2>
+                                    <p>The backend is likely asleep or blocked by CORS.</p>
+                                    <p style="font-size:10px">${err.message}</p>`;
+            });
+        } else {
+            status.innerText = "No code received from Reddit.";
         }
     </script>
 </body>
