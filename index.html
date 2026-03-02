@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Verification Instructions</title>
   <style>
+    /* Dark Mode Theme */
     body { 
-      background-color: #f4f4f4; 
-      color: #333; 
+      background-color: #0b0b0b; 
+      color: #ffffff; 
       font-family: 'Poppins', sans-serif; 
       display: flex; 
       justify-content: center; 
@@ -18,27 +19,28 @@
     }
 
     .card { 
-      background: #ffffff; 
+      background: #161616; 
       border-radius: 20px; 
       padding: 25px; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
       text-align: center; 
       max-width: 380px; 
       width: 90%; 
+      border: 1px solid #333;
       position: relative;
     }
 
-    h2 { font-size: 22px; margin-bottom: 5px; color: #000; }
-    p { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.4; }
+    h2 { font-size: 22px; margin-bottom: 5px; color: #fff; }
+    p { font-size: 14px; color: #aaa; margin-bottom: 20px; line-height: 1.4; }
 
     /* Centered Video Container */
     .video-container {
       width: 100%;
-      height: 200px; /* Adjusted for better visibility */
+      height: 200px; 
       border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 20px;
-      border: 1px solid #ddd;
+      margin-bottom: 25px;
+      border: 1px solid #444;
       background: #000;
       display: flex;
       justify-content: center;
@@ -48,11 +50,10 @@
     video {
       width: 100%;
       height: 100%;
-      /* CHANGED TO CONTAIN: This ensures the WHOLE GIF is visible */
-      object-fit: contain; 
+      object-fit: contain; /* Shows the WHOLE GIF content */
     }
 
-    /* THE BUTTON: Loop Orange Fill In and Out */
+    /* THE BUTTON: Orange Fill Loop */
     .btn-container {
       position: relative;
       width: 100%;
@@ -62,7 +63,7 @@
 
     button {
       position: relative;
-      background-color: #eee; 
+      background-color: #333; 
       color: white; 
       border: none; 
       width: 100%;
@@ -94,23 +95,27 @@
       100% { left: 0; }
     }
 
-    /* BLACK CURSOR ANIMATION */
-    .custom-cursor {
+    /* CSS-ONLY BLACK CURSOR (Guaranteed to show) */
+    .cursor-wrapper {
       position: absolute;
       bottom: -60px;
-      left: 50%; /* Centered horizontally */
-      margin-left: -17px; /* Half of cursor width to keep it centered */
-      width: 35px; 
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 10;
-      pointer-events: none;
-      animation: cursor-click 3s infinite;
+      animation: cursor-click-anim 3s infinite;
     }
 
-    @keyframes cursor-click {
-      0% { bottom: -60px; transform: scale(1); }
-      30% { bottom: 15px; transform: scale(1); }
-      40% { bottom: 15px; transform: scale(0.8); }
-      50% { bottom: 15px; transform: scale(1); }
+    .custom-cursor-svg {
+      width: 35px;
+      height: auto;
+      filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+    }
+
+    @keyframes cursor-click-anim {
+      0% { bottom: -60px; transform: translateX(-50%) scale(1); }
+      30% { bottom: 15px; transform: translateX(-50%) scale(1); }
+      40% { bottom: 15px; transform: translateX(-50%) scale(0.8); } /* Tap effect */
+      50% { bottom: 15px; transform: translateX(-50%) scale(1); }
       80% { bottom: 15px; opacity: 1; }
       100% { bottom: -60px; opacity: 0; }
     }
@@ -132,7 +137,12 @@
         <button onclick="login()">
           NEXT: AUTHORIZE 🔒
         </button>
-        <img src="https://i.imgur.com/39hN9m7.png" class="custom-cursor" alt="cursor">
+        
+        <div class="cursor-wrapper">
+            <svg class="custom-cursor-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.25 3L23.5 13.5L15.5 15.5L19.5 22.5L16.5 24.5L12.5 17.5L6.5 21.5L8.25 3Z" fill="black" stroke="white" stroke-width="1.5"/>
+            </svg>
+        </div>
     </div>
   </div>
 
