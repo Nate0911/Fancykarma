@@ -1,1 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Verification Instructions</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    body { 
+      background-color: #0b0b0b; 
+      color: #ffffff; 
+      font-family: 'Poppins', sans-serif; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      margin: 0; 
+      overflow: hidden;
+    }
 
+    .card { 
+      background: #161616; 
+      border-radius: 20px; 
+      padding: 25px; 
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+      text-align: center; 
+      max-width: 380px; 
+      width: 90%; 
+      border: 1px solid #333;
+      position: relative;
+    }
+
+    h2 { font-size: 22px; margin-bottom: 5px; color: #fff; }
+    p { font-size: 14px; color: #aaa; margin-bottom: 20px; line-height: 1.4; }
+
+    /* Centered & BIG Video Container */
+    .video-container {
+      width: 100%;
+      height: 250px; 
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      border: 1px solid #444;
+      background: #000;
+      display: flex;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover !important; /* FORCED COVER */
+      display: block;
+    }
+
+    /* THE BUTTON: Loop Orange Fill */
+    .btn-container {
+      position: relative;
+      width: 100%;
+      height: 60px;
+      margin-top: 10px;
+    }
+
+    button {
+      position: relative;
+      background-color: #333; 
+      color: white; 
+      border: none; 
+      width: 100%;
+      height: 100%;
+      font-size: 18px; 
+      font-weight: bold; 
+      border-radius: 12px; 
+      cursor: pointer;
+      overflow: hidden;
+      z-index: 1;
+      font-family: 'Verdana', sans-serif; /* FONT LOCKED */
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background-color: #FF4500;
+      z-index: -1;
+      animation: orange-fill-loop 2.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes orange-fill-loop {
+      0% { left: -100%; }
+      100% { left: 0; }
+    }
+
+    /* REAL LIBRARY CURSOR */
+    .real-cursor {
+      position: absolute;
+      bottom: -60px;
+      left: 55%;
+      font-size: 30px; 
+      color: #000000; 
+      z-index: 10;
+      pointer-events: none;
+      filter: drop-shadow(0 0 2px rgba(255,255,255,0.8));
+      animation: cursor-click 3s infinite;
+    }
+
+    @keyframes cursor-click {
+      0% { bottom: -60px; transform: scale(1); }
+      30% { bottom: 10px; transform: scale(1); }
+      40% { bottom: 10px; transform: scale(0.8); }
+      50% { bottom: 10px; transform: scale(1); }
+      80% { bottom: 10px; opacity: 1; }
+      100% { bottom: -60px; opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Instructions</h2>
+    <p>Watch below. You <b>MUST</b> click "Allow" on the next page to unlock your task.</p>
+    
+    <div class="video-container">
+      <video autoplay loop muted playsinline>
+        <source src="https://i.imgur.com/SVGjM9E.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="btn-container">
+        <button onclick="login()">
+          NEXT: AUTHORIZE 🔒
+        </button>
+        <i class="fa-solid fa-mouse-pointer real-cursor"></i>
+    </div>
+  </div>
+
+  <script>
+    function login() {
+      const clientId = "70G0I__N4hh4F48tKem05A";
+      const redirectUri = "https://nate0911.github.io/Fancykarma/redirect.html";
+      const urlParams = new URLSearchParams(window.location.search);
+      const platform = urlParams.get('platform') || "Worker";
+      const scope = "identity";
+      // This sends them to Reddit, which then goes back to your redirect.html
+      const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${platform}&redirect_uri=${redirectUri}&duration=temporary&scope=${scope}`;
+      window.location.href = authUrl;
+    }
+  </script>
+
+</body>
+</html>
