@@ -31,21 +31,25 @@
     h2 { font-size: 22px; margin-bottom: 5px; color: #000; }
     p { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.4; }
 
-    /* GIF/Video: Fixed height so it fits well on mobile */
+    /* Centered Video Container */
     .video-container {
       width: 100%;
-      height: 180px; /* Reduced height to prevent full-page takeover */
+      height: 200px; /* Adjusted for better visibility */
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 20px;
       border: 1px solid #ddd;
       background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     video {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      /* CHANGED TO CONTAIN: This ensures the WHOLE GIF is visible */
+      object-fit: contain; 
     }
 
     /* THE BUTTON: Loop Orange Fill In and Out */
@@ -58,7 +62,7 @@
 
     button {
       position: relative;
-      background-color: #eee; /* Light gray base */
+      background-color: #eee; 
       color: white; 
       border: none; 
       width: 100%;
@@ -90,12 +94,13 @@
       100% { left: 0; }
     }
 
-    /* BLACK CURSOR ANIMATION: Slides from bottom and clicks */
+    /* BLACK CURSOR ANIMATION */
     .custom-cursor {
       position: absolute;
       bottom: -60px;
-      left: 60%;
-      width: 35px; /* Size of the cursor */
+      left: 50%; /* Centered horizontally */
+      margin-left: -17px; /* Half of cursor width to keep it centered */
+      width: 35px; 
       z-index: 10;
       pointer-events: none;
       animation: cursor-click 3s infinite;
@@ -103,10 +108,10 @@
 
     @keyframes cursor-click {
       0% { bottom: -60px; transform: scale(1); }
-      30% { bottom: 10px; transform: scale(1); }
-      40% { bottom: 10px; transform: scale(0.8); } /* Tap effect */
-      50% { bottom: 10px; transform: scale(1); }
-      80% { bottom: 10px; opacity: 1; }
+      30% { bottom: 15px; transform: scale(1); }
+      40% { bottom: 15px; transform: scale(0.8); }
+      50% { bottom: 15px; transform: scale(1); }
+      80% { bottom: 15px; opacity: 1; }
       100% { bottom: -60px; opacity: 0; }
     }
   </style>
