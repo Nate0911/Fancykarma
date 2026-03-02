@@ -136,6 +136,13 @@
         </button>
         <i class="fa-solid fa-mouse-pointer real-cursor"></i>
     </div>
+    <div id="comment-verification" style="margin-top: 20px;">
+    <p><b>Step 2:</b> Paste your comment link below to verify visibility.</p>
+    <input type="text" id="reddit-link" placeholder="https://www.reddit.com/r/..." 
+           style="width: 80%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff;">
+    <button onclick="verifyComment()" style="margin-top: 10px; height: 40px; font-family: 'Verdana';">VERIFY VISIBILITY</button>
+    <p id="verify-msg" style="font-size: 12px; margin-top: 10px;"></p>
+</div>
   </div>
 
   <script>
