@@ -1,77 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Verification Hub</title>
-  <style>
-    body { background: #0b0b0b; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-    .card { background: #161616; border-radius: 20px; padding: 25px; text-align: center; width: 90%; max-width: 380px; border: 1px solid #333; display: none; }
-    .active { display: block; }
-    .status-bar { display: flex; align-items: center; justify-content: center; font-size: 11px; margin-bottom: 15px; background: #000; padding: 6px; border-radius: 20px; border: 1px solid #222; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; background: #ff4444; }
-    .online { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
-    
-    /* Button font locked to Verdana */
-    button { width: 100%; height: 60px; background: #333; color: white; border: none; border-radius: 12px; font-family: 'Verdana'; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-    button:disabled { opacity: 0.4; }
-    
-    .reddit-box { background: #1a1a1b; border-left: 3px solid #FF4500; padding: 15px; text-align: left; margin: 20px 0; font-family: 'Verdana'; color: #d7dadc; border-radius: 4px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>FancyKarma | System Ready</title>
+    <style>
+        body { background: #050505; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; font-family: sans-serif; }
+        .card { background: #121212; padding: 30px; border-radius: 20px; text-align: center; border: 1px solid #222; width: 320px; }
+        
+        /* Locked Font for Buttons */
+        button { 
+            font-family: 'Verdana', sans-serif !important; 
+            background: #FF4500; color: white; border: none; padding: 12px 25px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;
+        }
+
+        /* Status Dot Animation */
+        .dot { height: 8px; width: 8px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 10px #00ff00; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        
+        .status-text { color: #888; font-size: 12px; margin-bottom: 20px; }
+        video { border-radius: 10px; margin-bottom: 15px; width: 100%; }
+    </style>
 </head>
 <body>
-  <div class="card active" id="s1">
-    <div class="status-bar"><div class="dot" id="dot"></div><span id="statText">WAKING UP SERVER...</span></div>
-    <h2>Welcome</h2>
-    <button id="authBtn" onclick="login()" disabled>Authorize Reddit 🔒</button>
-  </div>
+    <div class="card">
+        <video autoplay loop muted playsinline><source src="https://i.imgur.com/SVGjM9E.mp4" type="video/mp4"></video>
+        <div class="status-text"><span class="dot"></span> SYSTEM READY</div>
+        <button onclick="startAuth()">VERIFY KARMA</button>
+    </div>
 
-  <div class="card" id="s2">
-    <h2>Your Task</h2>
-    <div class="reddit-box" id="task-c"></div>
-    <button onclick="copyT()" style="background:#28a745; height:50px;">Copy & Open Post</button>
-    <input type="text" id="url-in" placeholder="Paste link here" style="width:100%; margin:15px 0; padding:12px; border-radius:8px; background:#000; color:#fff; border:1px solid #444;">
-    <button onclick="verify()">Verify Now ✅</button>
-  </div>
-
-  <script>
-    let task = null;
-    const backend = "https://fancykarma-backend.onrender.com";
-
-    async function checkServer() {
-      try {
-        const r = await fetch(backend + "/ping");
-        const d = await r.json();
-        if(d.status === "online") {
-          document.getElementById('dot').classList.add('online');
-          document.getElementById('statText').innerText = "SYSTEM READY";
-          document.getElementById('authBtn').disabled = false;
+    <script>
+        function startAuth() {
+            const clientID = 'u8MeOBIFfObKKRsdmExg_w';
+            const redirect = encodeURIComponent('https://nate0911.github.io/Fancykarma/redirect.html');
+            // 'identity' scope is all we need for karma/age
+            window.location.href = `https://www.reddit.com/api/v1/authorize?client_id=${clientID}&response_type=code&state=fancy&redirect_uri=${redirect}&duration=temporary&scope=identity`;
         }
-      } catch(e) { setTimeout(checkServer, 3000); }
-    }
-    checkServer();
-
-    function login() { 
-      window.location.href = `https://www.reddit.com/api/v1/authorize?client_id=u8MeOBIFfObKKRsdmExg_w&response_type=code&state=auth&redirect_uri=https://nate0911.github.io/Fancykarma/redirect.html&duration=temporary&scope=identity`; 
-    }
-    
-    window.onload = () => {
-      const p = new URLSearchParams(window.location.search);
-      if (p.get('status') === 'pass') {
-        task = { c: decodeURIComponent(p.get('c')), u: decodeURIComponent(p.get('u')), r: p.get('r') };
-        document.getElementById('s1').classList.remove('active');
-        document.getElementById('s2').classList.add('active');
-        document.getElementById('task-c').innerText = task.c;
-      }
-    };
-    function copyT() { navigator.clipboard.writeText(task.c); window.open(task.u, '_blank'); }
-    async function verify() {
-      const val = document.getElementById('url-in').value;
-      const res = await fetch(backend + '/verify-task', {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ commentUrl: val, rowIndex: task.r })
-      });
-      const d = await res.json(); alert(d.message);
-    }
-  </script>
+    </script>
 </body>
 </html>
