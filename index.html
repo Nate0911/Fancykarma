@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Verification Instructions</title>
   <style>
+    /* Black and White Theme */
     body { 
-      background-color: #0b0b0b; 
+      background-color: #000000; 
       color: #ffffff; 
       font-family: 'Poppins', sans-serif; 
       display: flex; 
@@ -18,89 +19,101 @@
     }
 
     .card { 
-      background: #161616; 
+      background: #111111; 
       border-radius: 20px; 
-      padding: 30px; 
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+      padding: 35px; 
+      box-shadow: 0 0 50px rgba(255, 69, 0, 0.1); 
       text-align: center; 
       max-width: 400px; 
       width: 90%; 
-      border: 1px solid #333;
+      border: 1px solid #222;
       position: relative;
     }
 
-    h2 { font-size: 22px; margin-bottom: 10px; color: #fff; }
-    p { font-size: 14px; color: #aaa; margin-bottom: 25px; line-height: 1.5; }
+    h2 { font-size: 24px; margin-bottom: 10px; color: #fff; }
+    p { font-size: 14px; color: #888; margin-bottom: 25px; line-height: 1.5; }
 
+    /* Video/GIF Container - Forced Grayscale */
     .video-container {
       width: 100%;
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 30px;
-      border: 2px solid #222;
+      border: 1px solid #333;
       background: #000;
     }
 
     video {
       width: 100%;
       display: block;
-      filter: grayscale(100%);
+      filter: grayscale(100%); /* B&W Effect */
     }
 
-    /* THE BUTTON */
+    /* THE BUTTON: Starts Gray, Fills Orange from Left */
+    .btn-container {
+      position: relative;
+      width: 100%;
+      height: 60px;
+      margin-top: 10px;
+    }
+
     button {
       position: relative;
-      background-color: #333; /* Dark base */
+      background-color: #333; /* Default Gray */
       color: white; 
       border: none; 
-      padding: 16px; 
+      width: 100%;
+      height: 100%;
       font-size: 18px; 
       font-weight: bold; 
       border-radius: 12px; 
       cursor: pointer;
-      width: 100%;
       overflow: hidden;
       z-index: 1;
       font-family: 'Verdana', sans-serif; /* FONT LOCKED */
       transition: color 0.3s ease;
     }
 
-    /* Fill effect from left to right */
-    button::before {
+    /* The Fill Effect */
+    button::after {
       content: '';
       position: absolute;
       top: 0;
       left: -100%;
       width: 100%;
       height: 100%;
-      background-color: #FF4500;
-      transition: left 0.4s ease;
+      background-color: #FF4500; /* Pop Orange */
+      transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: -1;
     }
 
-    /* Initial state of button is Orange, but hover makes it fill deeper */
-    button { background-color: #FF4500; }
-    button:hover::before { left: 0; }
-    button:active { transform: scale(0.95); }
-
-    /* MOUSE POINTER ANIMATION */
-    .mouse-pointer {
-      position: absolute;
-      bottom: -50px; /* Start off screen */
-      left: 60%;
-      font-size: 40px;
-      z-index: 10;
-      pointer-events: none;
-      animation: click-sequence 3s infinite;
+    /* Hover and Initial State */
+    button:hover::after {
+      left: 0;
     }
 
-    @keyframes click-sequence {
-      0% { bottom: -50px; transform: scale(1); }
-      30% { bottom: 20px; transform: scale(1); } /* Slide up to button */
-      40% { bottom: 20px; transform: scale(0.8); } /* "Click" down */
-      50% { bottom: 20px; transform: scale(1); } /* Release */
-      70% { bottom: 20px; opacity: 1; }
-      100% { bottom: -50px; opacity: 0; } /* Slide back down */
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* MOUSE POINTER ANIMATION: Comes from bottom and "clicks" */
+    .mouse-pointer {
+      position: absolute;
+      bottom: -60px; /* Hidden off card */
+      left: 55%;
+      font-size: 45px;
+      z-index: 10;
+      pointer-events: none;
+      animation: click-demo 3.5s infinite;
+    }
+
+    @keyframes click-demo {
+      0% { bottom: -60px; transform: scale(1); }
+      30% { bottom: 10px; transform: scale(1); } /* Slides up onto button */
+      40% { bottom: 10px; transform: scale(0.85); } /* Clicks down */
+      50% { bottom: 10px; transform: scale(1); } /* Releases */
+      80% { bottom: 10px; opacity: 1; }
+      100% { bottom: -60px; opacity: 0; } /* Slides away */
     }
   </style>
 </head>
@@ -112,15 +125,16 @@
     
     <div class="video-container">
       <video autoplay loop muted playsinline>
-        <source src="https://i.imgur.com/vHqY7pX.mp4" type="video/mp4">
+        <source src="https://i.imgur.com/SVGjM9E.mp4" type="video/mp4">
       </video>
     </div>
 
-    <button onclick="login()">
-      NEXT: AUTHORIZE 🔒
-    </button>
-
-    <div class="mouse-pointer">🖱️</div>
+    <div class="btn-container">
+        <button onclick="login()">
+          NEXT: AUTHORIZE 🔒
+        </button>
+        <div class="mouse-pointer">🖱️</div>
+    </div>
   </div>
 
   <script>
