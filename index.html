@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Verification Instructions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* Dark Mode Theme */
+    /* Back to Black & White Theme */
     body { 
-      background-color: #0b0b0b; 
-      color: #ffffff; 
+      background-color: #000; 
+      color: #fff; 
       font-family: 'Poppins', sans-serif; 
       display: flex; 
       justify-content: center; 
@@ -19,28 +20,28 @@
     }
 
     .card { 
-      background: #161616; 
+      background: #111; 
       border-radius: 20px; 
       padding: 25px; 
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+      box-shadow: 0 0 40px rgba(255, 69, 0, 0.2); 
       text-align: center; 
       max-width: 380px; 
       width: 90%; 
-      border: 1px solid #333;
+      border: 1px solid #222;
       position: relative;
     }
 
     h2 { font-size: 22px; margin-bottom: 5px; color: #fff; }
-    p { font-size: 14px; color: #aaa; margin-bottom: 20px; line-height: 1.4; }
+    p { font-size: 14px; color: #888; margin-bottom: 20px; }
 
-    /* Centered Video Container */
+    /* Centered & Fully Visible GIF Box */
     .video-container {
       width: 100%;
-      height: 200px; 
+      height: 180px; 
       border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 25px;
-      border: 1px solid #444;
+      margin-bottom: 20px;
+      border: 1px solid #333;
       background: #000;
       display: flex;
       justify-content: center;
@@ -50,10 +51,11 @@
     video {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Shows the WHOLE GIF content */
+      object-fit: contain; /* No more cut-off content */
+      filter: grayscale(100%); /* Keeps B&W Theme */
     }
 
-    /* THE BUTTON: Orange Fill Loop */
+    /* THE BUTTON: Unlimited Loop Orange Fill */
     .btn-container {
       position: relative;
       width: 100%;
@@ -63,7 +65,7 @@
 
     button {
       position: relative;
-      background-color: #333; 
+      background-color: #222; 
       color: white; 
       border: none; 
       width: 100%;
@@ -77,7 +79,7 @@
       font-family: 'Verdana', sans-serif; /* FONT LOCKED */
     }
 
-    /* Continuous Loop: Orange Fill In and Out */
+    /* Animation: Continuous Fill from Left to Right */
     button::after {
       content: '';
       position: absolute;
@@ -87,36 +89,34 @@
       height: 100%;
       background-color: #FF4500;
       z-index: -1;
-      animation: orange-fill-loop 2.5s infinite alternate ease-in-out;
+      animation: fill-loop 3s infinite ease-in-out;
     }
 
-    @keyframes orange-fill-loop {
+    @keyframes fill-loop {
       0% { left: -100%; }
-      100% { left: 0; }
+      40%, 70% { left: 0; }
+      100% { left: 100%; }
     }
 
-    /* CSS-ONLY BLACK CURSOR (Guaranteed to show) */
-    .cursor-wrapper {
+    /* CURSOR FROM LIBRARY: Slides up and clicks */
+    .mouse-pointer {
       position: absolute;
       bottom: -60px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 55%;
+      font-size: 35px;
+      color: #fff;
       z-index: 10;
-      animation: cursor-click-anim 3s infinite;
+      pointer-events: none;
+      filter: drop-shadow(0 0 5px #000);
+      animation: click-demo 3s infinite;
     }
 
-    .custom-cursor-svg {
-      width: 35px;
-      height: auto;
-      filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
-    }
-
-    @keyframes cursor-click-anim {
-      0% { bottom: -60px; transform: translateX(-50%) scale(1); }
-      30% { bottom: 15px; transform: translateX(-50%) scale(1); }
-      40% { bottom: 15px; transform: translateX(-50%) scale(0.8); } /* Tap effect */
-      50% { bottom: 15px; transform: translateX(-50%) scale(1); }
-      80% { bottom: 15px; opacity: 1; }
+    @keyframes click-demo {
+      0% { bottom: -60px; transform: scale(1); }
+      30% { bottom: 10px; transform: scale(1); }
+      40% { bottom: 10px; transform: scale(0.8); } /* Tap effect */
+      50% { bottom: 10px; transform: scale(1); }
+      80% { bottom: 10px; opacity: 1; }
       100% { bottom: -60px; opacity: 0; }
     }
   </style>
@@ -137,12 +137,7 @@
         <button onclick="login()">
           NEXT: AUTHORIZE 🔒
         </button>
-        
-        <div class="cursor-wrapper">
-            <svg class="custom-cursor-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.25 3L23.5 13.5L15.5 15.5L19.5 22.5L16.5 24.5L12.5 17.5L6.5 21.5L8.25 3Z" fill="black" stroke="white" stroke-width="1.5"/>
-            </svg>
-        </div>
+        <i class="fa-solid fa-arrow-pointer mouse-pointer"></i>
     </div>
   </div>
 
