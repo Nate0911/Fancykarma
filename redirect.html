@@ -78,59 +78,45 @@
     </div>
   </div>
 
-  <script>
-    async function verifyReddit() {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      const state = params.get('state'); // This contains 'Sprout' or 'Rapid'
+ /* ... (Keep your existing Card/Spinner HTML and CSS) ... */
 
-      const resultDiv = document.getElementById('result');
+<script>
+  async function verifyReddit() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const resultDiv = document.getElementById('result');
 
-      // 1. Check if the user denied the request or code is missing
-      if (!code) {
-        resultDiv.className = "status-box fail";
-        resultDiv.innerHTML = "❌ Error: Authorization denied or missing.";
-        return;
-      }
-
-      try {
-        // 2. Send the data to your Render Backend
-        const response = await fetch('https://fancykarma-backend.onrender.com/auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            code: code,
-            state: state, // Pass the platform (Sprout/Rapid)
-            redirect_uri: "https://nate0911.github.io/Fancykarma/redirect.html"
-          })
-        });
-
-        const data = await response.json();
-
-        // 3. Handle the Backend Response
-        if (data.status === 'pass') {
-          resultDiv.className = "status-box success";
-          resultDiv.innerHTML = "✅ Verified! Sending you to the task...";
-          
-          // The backend sends the full 999 link with workerId=Platform_Name_Random
-          setTimeout(() => {
-            window.location.href = data.redirect;
-          }, 1500);
-          
-        } else {
-          resultDiv.className = "status-box fail";
-          resultDiv.innerHTML = `❌ ${data.reason || 'Account does not meet requirements.'}`;
-        }
-
-      } catch (err) {
-        resultDiv.className = "status-box fail";
-        resultDiv.innerHTML = `❌ Connection Error: ${err.message}`;
-        console.error("Verification error:", err);
-      }
+    if (!code) {
+      resultDiv.className = "status-box fail";
+      resultDiv.innerHTML = "❌ Auth Denied.";
+      return;
     }
 
-    // Run the verification on page load
-    verifyReddit();
-  </script>
+    try {
+      const response = await fetch('https://fancykarma-backend.onrender.com/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code, redirect_uri: "https://nate0911.github.io/Fancykarma/redirect.html" })
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'pass') {
+        resultDiv.className = "status-box success";
+        resultDiv.innerHTML = "✅ Verified! Loading task...";
+        if (window.opener) {
+          window.opener.postMessage(data, "*"); 
+          setTimeout(() => window.close(), 1000);
+        }
+      } else {
+        resultDiv.className = "status-box fail";
+        resultDiv.innerHTML = `❌ ${data.reason}`;
+      }
+    } catch (err) {
+      resultDiv.innerHTML = "❌ Server Error";
+    }
+  }
+  verifyReddit();
+</script>
 </body>
 </html>
