@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Verification Instructions</title>
   <style>
-    /* Dark Mode / Black & White Theme */
     body { 
       background-color: #0b0b0b; 
       color: #ffffff; 
@@ -15,6 +14,7 @@
       align-items: center; 
       height: 100vh; 
       margin: 0; 
+      overflow: hidden;
     }
 
     .card { 
@@ -26,52 +26,31 @@
       max-width: 400px; 
       width: 90%; 
       border: 1px solid #333;
+      position: relative;
     }
 
     h2 { font-size: 22px; margin-bottom: 10px; color: #fff; }
     p { font-size: 14px; color: #aaa; margin-bottom: 25px; line-height: 1.5; }
 
-    /* The Instruction Video/GIF Container */
     .video-container {
       width: 100%;
       border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 15px;
+      margin-bottom: 30px;
       border: 2px solid #222;
       background: #000;
-      position: relative;
     }
 
-    /* Make the video look like a GIF */
     video {
       width: 100%;
       display: block;
-      filter: grayscale(100%); /* Keeps it Black & White */
+      filter: grayscale(100%);
     }
 
-    /* Animated Arrow Container */
-    .arrow-box {
-      height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* Bouncing Animated Arrow */
-    .arrow {
-      font-size: 30px;
-      color: #FF4500;
-      animation: bounce 0.8s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(10px); }
-    }
-
-    /* The Pop Button with your Locked Font */
+    /* THE BUTTON */
     button {
-      background-color: #FF4500; 
+      position: relative;
+      background-color: #333; /* Dark base */
       color: white; 
       border: none; 
       padding: 16px; 
@@ -80,11 +59,49 @@
       border-radius: 12px; 
       cursor: pointer;
       width: 100%;
-      transition: transform 0.2s;
+      overflow: hidden;
+      z-index: 1;
       font-family: 'Verdana', sans-serif; /* FONT LOCKED */
+      transition: color 0.3s ease;
     }
 
-    button:active { transform: scale(0.96); background-color: #e63e00; }
+    /* Fill effect from left to right */
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background-color: #FF4500;
+      transition: left 0.4s ease;
+      z-index: -1;
+    }
+
+    /* Initial state of button is Orange, but hover makes it fill deeper */
+    button { background-color: #FF4500; }
+    button:hover::before { left: 0; }
+    button:active { transform: scale(0.95); }
+
+    /* MOUSE POINTER ANIMATION */
+    .mouse-pointer {
+      position: absolute;
+      bottom: -50px; /* Start off screen */
+      left: 60%;
+      font-size: 40px;
+      z-index: 10;
+      pointer-events: none;
+      animation: click-sequence 3s infinite;
+    }
+
+    @keyframes click-sequence {
+      0% { bottom: -50px; transform: scale(1); }
+      30% { bottom: 20px; transform: scale(1); } /* Slide up to button */
+      40% { bottom: 20px; transform: scale(0.8); } /* "Click" down */
+      50% { bottom: 20px; transform: scale(1); } /* Release */
+      70% { bottom: 20px; opacity: 1; }
+      100% { bottom: -50px; opacity: 0; } /* Slide back down */
+    }
   </style>
 </head>
 <body>
@@ -99,23 +116,19 @@
       </video>
     </div>
 
-    <div class="arrow-box">
-      <div class="arrow">↓</div>
-    </div>
-
     <button onclick="login()">
       NEXT: AUTHORIZE 🔒
     </button>
+
+    <div class="mouse-pointer">🖱️</div>
   </div>
 
   <script>
     function login() {
       const clientId = "70G0I__N4hh4F48tKem05A";
       const redirectUri = "https://nate0911.github.io/Fancykarma/redirect.html";
-      
       const urlParams = new URLSearchParams(window.location.search);
       const platform = urlParams.get('platform') || "Worker";
-      
       const scope = "identity";
       const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${platform}&redirect_uri=${redirectUri}&duration=temporary&scope=${scope}`;
       window.location.href = authUrl;
